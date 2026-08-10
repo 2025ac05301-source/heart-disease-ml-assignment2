@@ -78,6 +78,40 @@ def compute_metrics(y_true, y_pred, y_proba):
         "F1 Score": f1,
         "MCC Score": mcc
     }
+    
+def generate_runtime_observation(metrics, selected_label):
+    acc = metrics["Accuracy"]
+    f1 = metrics["F1 Score"]
+    auc = metrics["AUC Score"]
+    mcc = metrics["MCC Score"]
+    
+    # Dynamically categorize performance tier based on live runtime metrics
+    if f1 >= 0.90 and mcc >= 0.80:
+        tier = "exceptional high-tier performance"
+    elif f1 >= 0.80:
+        tier = "strong and robust operational performance"
+    else:
+        tier = "moderate baseline performance"
+        
+    observation = (
+        f"**Evaluation Insight for {selected_label}:** "
+        f"Operating on the currently loaded dataset, this model demonstrates {tier}. "
+        f"It achieved an overall Accuracy of **{acc:.4f}** and an F1-Score of **{f1:.4f}**, "
+        f"complemented by an AUC-ROC rating of **{auc:.4f}** and an MCC score of **{mcc:.4f}**. "
+    )
+    
+    if selected_label == "Random Forest (Ensemble)":
+        observation += "Ensembling multiple decision trees effectively minimizes variance and stabilizes predictions across target classes."
+    elif selected_label == "Logistic Regression":
+        observation += "Linear boundary separation handles scaled input parameters stably, maintaining steady generalization."
+    elif selected_label == "Decision Tree":
+        observation += "Recursive splits capture non-linear feature interactions directly from the dataset features."
+    elif selected_label == "K-Nearest Neighbors (kNN)":
+        observation += "Distance-based feature weighting correctly classifies neighboring instances based on normalized feature space."
+    elif selected_label == "Naive Bayes (Gaussian)":
+        observation += "Probabilistic conditional independence calculations execute rapidly while preserving class boundary estimates."
+        
+    return observation
 
 def main():
     # App Title & Overview
@@ -156,6 +190,10 @@ def main():
     for col, metric in zip(cols, metric_names):
         with col:
             st.metric(label=metric, value=f"{metrics[metric]:.4f}")
+
+    # Display Performance Observation Box
+    runtime_observation = generate_runtime_observation(metrics, selected_label)
+    st.info(runtime_observation)
             
     # Section 2: Side-by-Side Deep Dive Visualizations (Confusion Matrix & Classification Report)
     st.markdown("---")
