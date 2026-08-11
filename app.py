@@ -17,9 +17,9 @@ from sklearn.metrics import (
     classification_report
 )
 
-# Import modular model components from models/ directory
-from models.scaler import get_scaler
-from models import logistic_regression, decision_tree, knn, naive_bayes, random_forest
+# Import modular model components from model/ directory
+from model.scaler import get_scaler
+from model import logistic_regression, decision_tree, knn, naive_bayes, random_forest
 
 st.set_page_config(
     page_title="Heart Disease Intelligence Portal",
